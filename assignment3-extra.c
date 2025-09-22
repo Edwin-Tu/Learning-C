@@ -8,10 +8,12 @@ int main(void){
 
     //prompt user to inpur first and last name and use scanf() to store those to the initiliazed vars
     printf("Enter your first name:");
-    scanf("%ms",&first);
+    scanf("%s",&first);
     printf("Enter your last name:");
-    scanf("%ms",&last);
+    scanf("%s",&last);
 
     //print the welcome message!
-    printf("Hello, %s %s!\n",first,last);
+    printf("Hello, %s %s!\n",&first,&last);
+    free(first);
+    free(last);
 }
