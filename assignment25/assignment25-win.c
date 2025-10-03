@@ -1,11 +1,12 @@
 #include <stdio.h>
-#include <unistd.h>
+#include <io.h>
+#include <sys/stat.h>
 #include <fcntl.h>
 
 int main (void){
     int filedescriptor;
 
-    filedescriptor = open("testfile.txt",O_WRONLY)| O_CREAT, S_IRWXU;
+    filedescriptor = open("testfile.txt",O_WRONLY| O_CREAT, _S_IREAD | _S_IWRITE);
 
     if (filedescriptor < 0){
         printf("The open operation failed...");
