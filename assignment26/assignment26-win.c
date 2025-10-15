@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <windows.h>
 #include <WinSock2.h>
 
 
